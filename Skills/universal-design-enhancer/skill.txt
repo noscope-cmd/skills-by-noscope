@@ -1,0 +1,992 @@
+
+---
+name: universal-design-enhancer
+description: >
+  A comprehensive design system skill for elevating the visual quality, UX clarity, and aesthetic
+  sophistication of anything with a user interface — web apps, dashboards, landing pages, component
+  libraries, design systems, CLI output formatting, documentation layouts, email templates, mobile
+  screens, and more. Use this skill whenever the user wants to make something look better, feel more
+  polished, fix visual hierarchy issues, improve typography, choose better colors, refine spacing,
+  redesign a component, create a new UI from scratch, or when any output involves rendering something
+  a human will look at. Trigger even if the user just says "make it prettier", "this looks bad",
+  "can you improve the design", "it feels off", or "add some style". This skill is intentionally
+  broad — if there's a UI involved, use it.
+author: noscope-cmd (nscope.netlify.app)
+version: 1.0.0
+---
+
+# Universal Design Enhancer
+
+A deep, opinionated skill for making interfaces, layouts, and visual systems genuinely beautiful —
+not "AI-generated beautiful" but *real* beautiful. The kind of work that makes a designer stop
+scrolling.
+
+This skill covers the full design stack: visual hierarchy, typography, color, spacing, motion,
+component architecture, accessibility, and the invisible details that separate polished work from
+everything else.
+
+---
+
+## Philosophy
+
+Before touching a single line of CSS or picking a color, internalize this:
+
+**Great design is invisible.** Users shouldn't think "nice design." They should just feel at ease,
+find what they need, and accomplish their goal without friction. Beauty is a byproduct of clarity —
+not decoration slapped on top.
+
+**AI design is recognizable — and that's the problem.** It tends toward:
+- Generic sans-serif fonts at predictable weights
+- Indigo/purple gradients and glowing cards
+- "Glassmorphism" applied without reason
+- Padding that's either too tight or identically uniform
+- Shadow values copy-pasted from Tailwind docs
+- Animations that exist purely to look animated
+
+This skill actively fights those tendencies. Before generating any design decision, ask: *would a
+senior product designer at a company with taste make this choice?*
+
+**Constraints produce beauty.** Fewer colors. Fewer font sizes. Fewer shadow values. Tighter rules
+applied more consistently. The goal is a system, not a collection of one-off decisions.
+
+---
+
+## Step 1 — Understand the Design Problem
+
+Before producing any design work, identify:
+
+1. **What is this?** (app, landing page, dashboard, component, email, doc, etc.)
+2. **Who uses it?** (technical users, consumers, executives, developers reading docs)
+3. **What's the primary action?** (read, click, fill in, compare, navigate)
+4. **What's the tone?** (professional/enterprise, playful/consumer, minimal/editorial,
+   warm/human, technical/precise)
+5. **What already exists?** (existing colors, fonts, components that need to stay)
+6. **What platform?** (web, mobile native, print, terminal)
+
+If the user hands you a screenshot, existing code, or describes their current state, extract these
+answers from context before asking. Ask only what you genuinely can't infer.
+
+---
+
+## Step 2 — Run a Design Audit
+
+Before redesigning anything, audit what exists (or what's requested). Look for:
+
+### Visual Hierarchy Problems
+- Is there a clear single most-important element on screen?
+- Are all elements competing at equal visual weight?
+- Does the eye know where to go after landing on the page?
+- Is there contrast between primary, secondary, and tertiary information?
+
+### Typography Problems
+- More than 3 font sizes in active use → reduce
+- Line-height below 1.4 for body text → too tight
+- Line-length over ~75ch for prose → too wide to read comfortably
+- All-caps used without letter-spacing → hard to read
+- Font weight used as the *only* differentiator between hierarchy levels
+- Missing optical sizing for small vs large display text
+
+### Color Problems
+- More than 5 distinct hues in the palette → too many
+- Low contrast between text and background (check against WCAG AA at minimum)
+- Saturated colors used for large areas → visually exhausting
+- Colors chosen without semantic meaning (red that isn't error, green that isn't success)
+- Missing dark mode consideration if it's a web app
+
+### Spacing Problems
+- Inconsistent spacing that doesn't follow a scale
+- Content hugging container edges without breathing room
+- Elements grouped by proximity incorrectly (Gestalt law of proximity violation)
+- Padding/margin that doesn't match the typographic rhythm
+
+### Component Problems
+- Interactive elements that don't look interactive
+- States missing (hover, focus, disabled, loading, error, empty)
+- Touch targets under 44px on mobile
+- Forms without clear labels, validation feedback, or logical tab order
+
+### Motion Problems
+- Animations over 400ms that block interaction
+- Motion with no easing (linear feels robotic)
+- Animations that serve no communicative purpose
+- Missing reduced-motion consideration
+
+---
+
+## Step 3 — Design Token System First
+
+**Never make isolated design decisions.** Design from a token system. Even for a single component,
+establish the tokens before writing a line of styling code. This is what separates work that scales
+from work that falls apart.
+
+### Spacing Scale
+
+Use a base-4 or base-8 scale. Pick one and commit.
+
+```
+--space-1:  4px
+--space-2:  8px
+--space-3: 12px
+--space-4: 16px
+--space-5: 20px
+--space-6: 24px
+--space-8: 32px
+--space-10: 40px
+--space-12: 48px
+--space-16: 64px
+--space-20: 80px
+--space-24: 96px
+```
+
+Never use arbitrary pixel values like `17px`, `23px`, or `37px`. If a value isn't on the scale,
+question whether you need it at all.
+
+### Type Scale
+
+Use a modular scale. The major third (1.25×) is versatile for UI. The perfect fourth (1.333×) is
+better for editorial. The minor second (1.067×) works for dense data interfaces.
+
+```
+--text-xs:   0.75rem   /* 12px */
+--text-sm:   0.875rem  /* 14px */
+--text-base: 1rem      /* 16px */
+--text-lg:   1.125rem  /* 18px */
+--text-xl:   1.25rem   /* 20px */
+--text-2xl:  1.5rem    /* 24px */
+--text-3xl:  1.875rem  /* 30px */
+--text-4xl:  2.25rem   /* 36px */
+--text-5xl:  3rem      /* 48px */
+--text-6xl:  3.75rem   /* 60px */
+```
+
+**In practice, use 3–4 sizes maximum in any single screen.**
+
+### Line Height
+
+```
+--leading-none:   1
+--leading-tight:  1.25   /* display headings */
+--leading-snug:   1.375  /* subheadings */
+--leading-normal: 1.5    /* UI labels */
+--leading-relaxed: 1.625 /* body copy */
+--leading-loose:  2      /* very spacious */
+```
+
+### Letter Spacing
+
+```
+--tracking-tighter: -0.05em  /* large display text */
+--tracking-tight:   -0.025em /* headings */
+--tracking-normal:   0em
+--tracking-wide:     0.025em /* UI labels */
+--tracking-wider:    0.05em  /* small caps, overlines */
+--tracking-widest:   0.1em   /* all-caps labels */
+```
+
+### Radius Scale
+
+```
+--radius-sm:   4px
+--radius-md:   8px
+--radius-lg:  12px
+--radius-xl:  16px
+--radius-2xl: 24px
+--radius-full: 9999px
+```
+
+Don't mix radii across components unless there's a deliberate reason (large container = larger
+radius, small badge = smaller or pill).
+
+### Shadow Scale
+
+```css
+--shadow-xs:  0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+--shadow-md:  0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+--shadow-lg:  0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+--shadow-xl:  0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+--shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+```
+
+**Only use shadows to communicate elevation.** Don't use them purely for decoration. Flat cards on
+flat backgrounds need borders, not shadows.
+
+---
+
+## Step 4 — Color System
+
+Color is the area where AI design fails most visibly. Here's how to do it right.
+
+### Build a Palette with Purpose
+
+Every color needs a role. Define:
+
+```
+Neutral    → text, backgrounds, borders, dividers
+Brand      → primary actions, active states, focus rings
+Accent     → secondary highlights, decorative elements (use sparingly)
+Semantic   → success, warning, error, info (always functional)
+```
+
+### The Neutral Palette (Most Important)
+
+Most of your UI is neutrals. Spend the most time here.
+
+```css
+--gray-50:   oklch(98% 0.004 264)   /* page background */
+--gray-100:  oklch(96% 0.006 264)   /* subtle background */
+--gray-200:  oklch(91% 0.008 264)   /* borders */
+--gray-300:  oklch(83% 0.010 264)   /* strong borders */
+--gray-400:  oklch(70% 0.012 264)   /* placeholder text */
+--gray-500:  oklch(60% 0.012 264)   /* secondary text */
+--gray-600:  oklch(48% 0.010 264)   /* body text (accessible) */
+--gray-700:  oklch(38% 0.008 264)   /* primary text */
+--gray-800:  oklch(26% 0.006 264)   /* headings */
+--gray-900:  oklch(16% 0.004 264)   /* maximum contrast */
+```
+
+Use OKLCH for color definition — it produces perceptually uniform colors that look like they
+belong together. Adjust the hue angle to introduce warmth (near 60–80) or coolness (near 240–280).
+
+### Brand Color
+
+Pick one primary hue. Generate a full tonal scale:
+
+```css
+--brand-50:   oklch(97% 0.03 <hue>)
+--brand-100:  oklch(93% 0.06 <hue>)
+--brand-200:  oklch(86% 0.12 <hue>)
+--brand-300:  oklch(76% 0.16 <hue>)
+--brand-400:  oklch(65% 0.20 <hue>)
+--brand-500:  oklch(55% 0.22 <hue>)   /* main brand */
+--brand-600:  oklch(46% 0.20 <hue>)   /* hover state */
+--brand-700:  oklch(37% 0.17 <hue>)   /* pressed state */
+--brand-800:  oklch(28% 0.13 <hue>)
+--brand-900:  oklch(20% 0.08 <hue>)
+```
+
+**Use brand color at full saturation only for interactive elements and small accent areas.** For
+large surfaces, use brand-50 or brand-100.
+
+### Contrast Rules
+
+- Body text on white: minimum 4.5:1 (WCAG AA) — aim for 7:1 (WCAG AAA)
+- Large text / UI components: minimum 3:1
+- Text on colored backgrounds: always verify with a contrast checker
+- Don't rely on color alone to convey meaning (pair with icon or text)
+
+### Color Application Patterns
+
+**Light theme:**
+```
+Background:       gray-50 / white
+Surface:          white / gray-50
+Border:           gray-200
+Secondary border: gray-100
+Body text:        gray-700
+Secondary text:   gray-500
+Muted text:       gray-400
+Headings:         gray-900
+```
+
+**Dark theme:**
+```
+Background:       gray-950 / #0a0a0a
+Surface:          gray-900
+Border:           gray-800
+Body text:        gray-200
+Secondary text:   gray-400
+Muted text:       gray-600
+Headings:         gray-50
+```
+
+For dark mode, don't just invert the light palette. Dark surfaces should have very slightly elevated
+lightness for cards vs. backgrounds (not dramatic — 2–3% OKLCH lightness difference creates the
+right sense of depth without looking posterized).
+
+---
+
+## Step 5 — Typography in Practice
+
+### Font Selection
+
+**For UI work (apps, dashboards, tools):**
+- `Inter` — the safe, excellent choice for product UI
+- `Geist` — modern, clean, great for developer tools
+- `DM Sans` — slightly warmer, great for B2B SaaS
+- `Instrument Sans` — elegant, slightly editorial feel
+- `IBM Plex Sans` — technical products, highly legible at small sizes
+
+**For editorial / marketing:**
+- `Fraunces` — distinctive serif with optical sizes
+- `Playfair Display` — classic editorial, luxury
+- `Sora` — geometric, tech-forward
+- `Cabinet Grotesk` — personality, good for brand-heavy work
+- `Bricolage Grotesque` — variable, expressive
+
+**For monospace (code, data, terminals):**
+- `JetBrains Mono` — excellent code reading experience
+- `Geist Mono` — modern, matches Geist Sans
+- `Berkeley Mono` — premium feel
+- `Fira Code` — great for ligatures if appropriate
+
+**Never:**
+- Mix more than 2 typefaces without strong reason
+- Use Roboto in a non-Android context (it's optimized for Android, looks dated elsewhere)
+- Use Comic Sans, Papyrus, or any novelty font for anything serious
+- Use a decorative font for body text
+
+### Typographic Hierarchy
+
+Build hierarchy with **weight first, size second**. Relying purely on size changes creates noise;
+weight changes communicate meaning more efficiently.
+
+A working system for a typical web app:
+
+```
+Page title:      text-3xl, font-700, leading-tight, tracking-tight
+Section heading: text-xl, font-600, leading-snug
+Subsection:      text-base, font-600, leading-normal
+Body:            text-base, font-400, leading-relaxed, color: gray-600
+Caption:         text-sm, font-400, leading-normal, color: gray-500
+Label / overline: text-xs, font-500, leading-none, tracking-wider, uppercase
+```
+
+### Measure (Line Length)
+
+- Prose / articles: 60–75 characters (~prose-lg in Tailwind)
+- UI body text: 45–65 characters
+- Narrow columns / captions: 30–45 characters
+- Never let body text span the full width of a 1440px screen
+
+### Optical Alignment
+
+Large display text (48px+) needs `tracking-tighter` to avoid gaps between letterforms that make it
+look like a ransom note. This is the single most obvious tell between beginner and professional
+typography work.
+
+Numbers in data tables should be tabular numerals (`font-variant-numeric: tabular-nums`) so they
+align in columns.
+
+---
+
+## Step 6 — Layout & Spacing
+
+### The Spatial System
+
+Use spacing tokens consistently. The rhythm should be obvious when you look at the page.
+
+**Intra-component spacing** (between elements inside a component): space-2 to space-4  
+**Inter-component spacing** (between components in a layout): space-6 to space-12  
+**Section spacing** (between page sections): space-16 to space-24  
+**Page margins / container padding**: space-6 to space-16 depending on breakpoint
+
+### Container Widths
+
+```css
+--width-xs:   320px  /* mobile min */
+--width-sm:   480px  /* small cards */
+--width-md:   640px  /* content well */
+--width-lg:   768px  /* forms, articles */
+--width-xl:  1024px  /* wide content */
+--width-2xl: 1280px  /* standard max-width */
+--width-3xl: 1440px  /* wide screen max */
+```
+
+Most web apps should cap the main content at 1280px and center it. Don't let content stretch to
+the edge on wide screens — it creates uncomfortable reading and makes the UI feel undesigned.
+
+### Grid Principles
+
+Use 12-column grids for flexibility. Common patterns:
+
+```
+Full-width hero:     12/12
+Side nav + content:  3/12 nav + 9/12 content
+Two columns:         6/12 + 6/12
+Three columns:       4/12 × 3
+Sidebar layout:      2/12 + 10/12 (for tight sidebars)
+Form layout:         6/12 centered or 4/12 centered
+```
+
+**Gap between grid columns should be proportional to column width.** A 4-column grid with 32px
+columns and 48px gaps looks broken. Space-6 (24px) is usually right for most column gaps.
+
+### Breathing Room
+
+White space is not empty space — it's active design. Increase padding beyond what feels comfortable
+and then increase it 20% more. Most AI-generated designs are too tight.
+
+---
+
+## Step 7 — Component Patterns
+
+This section provides implementation patterns for the most common UI components. Apply the design
+tokens established earlier.
+
+### Buttons
+
+```css
+/* Primary */
+.btn-primary {
+  background: var(--brand-600);
+  color: white;
+  padding: var(--space-2) var(--space-4);   /* 8px 16px */
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  border: none;
+  cursor: pointer;
+  transition: background 150ms ease, transform 100ms ease, box-shadow 150ms ease;
+}
+
+.btn-primary:hover {
+  background: var(--brand-700);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+}
+
+.btn-primary:disabled {
+  background: var(--gray-200);
+  color: var(--gray-400);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+```
+
+**Always define all 5 states: default, hover, active, focus, disabled.**
+
+For ghost/outline buttons: use `border: 1.5px solid` rather than `1px` — it renders crisper at
+most screen densities.
+
+For icon-only buttons: ensure the touch target is at least 44×44px even if the visual icon is
+smaller (use padding to expand the clickable area).
+
+### Cards
+
+```css
+.card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+/* Use shadow for elevation, not decoration */
+.card--elevated {
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+
+/* For interactive cards */
+.card--interactive:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--gray-300);
+}
+```
+
+**On white/light backgrounds, use border-only cards.** On gray backgrounds (`gray-50`, `gray-100`),
+use white cards with shadow and no border.
+
+### Form Inputs
+
+```css
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);       /* 8px 12px */
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--gray-900);
+  background: white;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--gray-400);
+}
+
+.input:hover {
+  border-color: var(--gray-400);
+}
+
+.input:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px oklch(from var(--brand-500) l c h / 0.15);
+}
+
+.input--error {
+  border-color: oklch(55% 0.22 25);   /* red */
+  box-shadow: 0 0 0 3px oklch(55% 0.22 25 / 0.12);
+}
+```
+
+Form labels should be above the input, not floating inside. Floating labels look clever but
+create usability problems (label disappears when there's a value, hard to scan a form quickly).
+
+### Navigation
+
+**Top nav:**
+- Height: 56–64px
+- Border-bottom: 1px solid gray-200 (light) or gray-800 (dark)
+- Logo on the left, actions on the right, primary navigation centered or after logo
+- Sticky on scroll with backdrop-blur on glass variants
+
+**Sidebar nav:**
+- Width: 240–280px (collapsible to 64px icon-only mode)
+- Active state: brand-50 background, brand-700 text, brand-600 left border (2px)
+- Hover state: gray-100 background
+- Icons: 20px, stroke-based, not filled (more legible at small sizes)
+
+### Tables
+
+```css
+.table-container {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table th {
+  background: var(--gray-50);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  text-align: left;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.table td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--gray-700);
+  border-bottom: 1px solid var(--gray-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: var(--gray-50);
+}
+```
+
+### Badges / Tags
+
+```css
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  letter-spacing: var(--tracking-wide);
+}
+
+.badge--success {
+  background: oklch(95% 0.06 145);
+  color: oklch(30% 0.15 145);
+}
+
+.badge--warning {
+  background: oklch(95% 0.08 80);
+  color: oklch(35% 0.18 60);
+}
+
+.badge--error {
+  background: oklch(95% 0.06 25);
+  color: oklch(35% 0.20 25);
+}
+
+.badge--neutral {
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+```
+
+### Empty States
+
+Every data component needs an empty state. This is where most apps fail.
+
+```
+Structure:
+1. Illustration or icon (not just a gray box — make it communicate the context)
+2. Short heading: "No [thing] yet" or "Nothing here"
+3. 1–2 line description of what this section does
+4. Primary CTA to create the first item (if applicable)
+```
+
+Center it vertically within the container. Don't let it look like a broken layout.
+
+---
+
+## Step 8 — Motion & Animation
+
+Animation should communicate, not decorate.
+
+### Timing Values
+
+```css
+--duration-instant:  50ms
+--duration-fast:    150ms
+--duration-normal:  250ms
+--duration-slow:    400ms
+--duration-slower:  600ms
+```
+
+Never animate anything that blocks user interaction. Entry animations should complete before the
+user needs to interact with the element.
+
+### Easing
+
+```css
+--ease-in:       cubic-bezier(0.4, 0, 1, 1)     /* things leaving */
+--ease-out:      cubic-bezier(0, 0, 0.2, 1)     /* things entering */
+--ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1)   /* transitions */
+--ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1) /* playful spring */
+--ease-bounce:   cubic-bezier(0.68, -0.55, 0.265, 1.55)
+```
+
+**Linear easing is almost never correct** for interface animations — it feels robotic and cheap.
+
+### When to Animate
+
+- State changes: fade, slide, scale (150–250ms)
+- Page transitions: fade + subtle slide (200–300ms)
+- Modals / dialogs: scale from 95% to 100% + fade (200ms)
+- Tooltips: fade only (100–150ms)
+- Skeleton loading: shimmer pulse (1200ms loop, ease-in-out)
+- Toast notifications: slide in + fade (200ms), slide out (150ms)
+
+### Reduced Motion
+
+Always include:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+---
+
+## Step 9 — The Details That Separate Good from Great
+
+These are the finishing touches that professional designers apply almost unconsciously but that
+completely transform the perceived quality of a product.
+
+### Focus States
+
+Every interactive element needs a visible focus state. Don't use `outline: none` without
+providing an alternative. The default browser focus ring is ugly but removing it without replacement
+is a serious accessibility failure.
+
+```css
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+```
+
+### Text Rendering
+
+```css
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+```
+
+### Cursor Signals
+
+```css
+button, [role="button"] { cursor: pointer; }
+[disabled]              { cursor: not-allowed; }
+[data-loading]          { cursor: wait; }
+textarea, input         { cursor: text; }
+a                       { cursor: pointer; }
+```
+
+### Image Handling
+
+```css
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent layout shift */
+img[width][height] {
+  height: auto;
+}
+
+/* Skeleton while loading */
+.img-container {
+  background: var(--gray-100);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+```
+
+### Scrollbar Styling (where appropriate)
+
+```css
+/* Custom scrollbars for webkit */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+```
+
+### Selection Color
+
+```css
+::selection {
+  background: oklch(from var(--brand-500) l c h / 0.2);
+  color: var(--brand-900);
+}
+```
+
+### Content Truncation
+
+```css
+.truncate-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.truncate-2 {
+  -webkit-line-clamp: 2;
+}
+```
+
+### Number Formatting
+
+- Always use `font-variant-numeric: tabular-nums` in tables and dashboards
+- Format large numbers: 1,234,567 not 1234567
+- Align currency to decimal point
+- Use consistent decimal places within a column
+
+### Icons
+
+- Use a single icon library — don't mix Heroicons with Lucide with Phosphor
+- 16px for inline/text icons, 20px for navigation, 24px for feature icons, 32-48px for empty states
+- Icon color should match surrounding text color, not be a separate color
+- Stroke icons at 1.5px weight for most UI uses
+
+---
+
+## Step 10 — Responsive Design
+
+### Breakpoints
+
+```css
+/* Mobile-first */
+--bp-sm:  640px   /* Large phones, small tablets */
+--bp-md:  768px   /* Tablets */
+--bp-lg: 1024px   /* Small laptops */
+--bp-xl: 1280px   /* Standard desktops */
+--bp-2xl: 1536px  /* Large screens */
+```
+
+### Mobile Patterns
+
+- Navigation: bottom tab bar (5 items max) or hamburger drawer for mobile
+- Tap targets: minimum 44×44px (Apple HIG / WCAG guideline)
+- Side padding on mobile: space-4 (16px) minimum, space-5 (20px) preferred
+- Cards go full-width on mobile (no horizontal margins on cards)
+- Font sizes never below 14px on mobile (causes iOS zoom on focus)
+- Form inputs: minimum 16px font size (prevents iOS auto-zoom)
+- No hover-only interactions on touch
+
+### Responsive Typography
+
+```css
+h1 {
+  font-size: clamp(1.875rem, 4vw, 3rem);      /* 30px → 48px */
+  line-height: clamp(1.2, 1.1 + 0.5vw, 1.15);
+}
+
+.hero-heading {
+  font-size: clamp(2.5rem, 6vw, 5rem);        /* 40px → 80px */
+}
+```
+
+Using `clamp()` for type means you don't need explicit breakpoints for font scaling.
+
+---
+
+## Step 11 — Dark Mode
+
+Dark mode isn't "invert the colors." It's a completely different context of use.
+
+### Principles
+
+1. **Dark backgrounds should be dark gray, not pure black.** Pure black (#000) creates harsh
+   contrast on bright displays. Use oklch(8% 0.004 264) or similar.
+
+2. **Surface elevation uses lightness, not shadow.** In light mode, shadows create depth. In dark
+   mode, use progressively lighter backgrounds:
+   ```
+   Base:    oklch(10% ...)
+   Surface: oklch(14% ...)
+   Overlay: oklch(18% ...)
+   Tooltip: oklch(22% ...)
+   ```
+
+3. **Reduce color saturation.** Brand and accent colors that look great on white look harsh and
+   overly vivid on dark backgrounds. Reduce chroma by 15–20% and increase lightness.
+
+4. **Borders become more important.** Without shadows, borders carry more weight for separating
+   elements. Use slightly brighter borders in dark mode: gray-700 instead of gray-800.
+
+5. **Images with light backgrounds need special treatment.** Provide dark versions or use
+   `mix-blend-mode: screen` / `filter: brightness()` adjustments.
+
+### Implementation Pattern
+
+```css
+:root {
+  --bg: oklch(99% 0.004 264);
+  --surface: white;
+  --border: oklch(91% 0.008 264);
+  --text-primary: oklch(16% 0.004 264);
+  --text-secondary: oklch(48% 0.010 264);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: oklch(10% 0.004 264);
+    --surface: oklch(14% 0.006 264);
+    --border: oklch(26% 0.008 264);
+    --text-primary: oklch(93% 0.006 264);
+    --text-secondary: oklch(65% 0.008 264);
+  }
+}
+```
+
+---
+
+## Step 12 — Output Format Guidelines
+
+When producing design work, output according to context:
+
+### For CSS / Tailwind / Component Code
+
+- Write production-quality code, not demo code
+- Use CSS custom properties (tokens) rather than hardcoded values
+- Include all interactive states (hover, focus, active, disabled)
+- Add `transition` to anything that changes visually
+- Comment sections that aren't self-evident
+
+### For Design Descriptions / Critiques
+
+Use this structure:
+1. **What's working** — acknowledge what's good before changing it
+2. **Primary issue** — the single most important problem to fix
+3. **Specific changes** — concrete, actionable, with values where possible
+4. **Why it matters** — explain the design principle behind each change
+
+### For Complete UI Implementations
+
+Structure the output:
+1. Design tokens / CSS variables at the top
+2. Base reset / global styles
+3. Layout components (wrappers, grids, containers)
+4. UI components in order of complexity
+5. Page-specific overrides last
+6. Responsive adjustments at the bottom
+
+### For Design Recommendations Without Code
+
+Provide:
+- Specific values (not "make it bigger" — "increase from 14px to 16px")
+- Reasoning (not "it looks bad" — "at 14px with a 75-character measure, reading fatigue increases")
+- Priority (what to fix first vs. what's optional polish)
+
+---
+
+## Anti-Patterns: Things This Skill Actively Avoids
+
+These are the hallmarks of AI-generated design. Avoid them entirely unless there is a specific,
+articulated reason to use one.
+
+| Anti-Pattern | Why It's a Problem | What to Do Instead |
+|---|---|---|
+| Indigo/purple gradient hero | Overused to exhaustion | Pick a brand color with purpose, use flat or image-based heroes |
+| Glowing card borders | Decorative with no communicative value | Use clean borders or elevation-based shadows |
+| Glassmorphism (blur + transparent) | Works only in controlled contexts, usually muddy | Reserve for floating UI over rich imagery only |
+| `backdrop-filter: blur` everywhere | Performance expensive, overused | Use solid backgrounds with proper layering |
+| Gradient text on every heading | Hard to read, cliché | Use gradient text for maximum one hero element |
+| "Animated background particles" | Distracting, provides no information | Static, calm backgrounds that don't compete with content |
+| Full-bleed sections alternating white/gray | Dated pattern from 2014 marketing sites | Use consistent backgrounds with component-level separation |
+| 6+ font weights in one UI | Chaotic hierarchy | Pick 2 weights max for UI (400 + 600, or 400 + 700) |
+| Emoji as icons in product UI | Inconsistent across OS, unprofessional | Use a proper icon library |
+| `border-radius: 20px` on everything | Excessive, looks childish for non-consumer apps | Match radius to tone: sharp for professional, round for consumer |
+| Box shadows on text | Never readable, always ugly | Use text color contrast for text hierarchy |
+| Centering all body text | Hard to read beyond 2 lines | Left-align body text always; center only short labels/CTAs |
+| Lorem ipsum in final demos | Shows the design isn't thought through | Use realistic content that reveals hierarchy problems |
+
+---
+
+## Checklist Before Finishing
+
+Before calling any design done, verify:
+
+- [ ] All interactive elements have hover, focus, active, and disabled states
+- [ ] Color contrast meets WCAG AA minimum (4.5:1 for text, 3:1 for UI components)
+- [ ] No arbitrary pixel values — every spacing/sizing value is from the token scale
+- [ ] Typography uses at most 3–4 distinct sizes on a single screen
+- [ ] `prefers-reduced-motion` is respected
+- [ ] `prefers-color-scheme: dark` is handled (or explicitly deferred with a note)
+- [ ] Touch targets are at least 44×44px on mobile
+- [ ] Empty states are designed (not blank)
+- [ ] Loading states are accounted for
+- [ ] Error states are accounted for
+- [ ] No more than 2 typeface families in use
+- [ ] Spacing follows the established scale (no one-off padding values)
+- [ ] The design has been viewed at mobile, tablet, and desktop widths
+
+---
+
+
